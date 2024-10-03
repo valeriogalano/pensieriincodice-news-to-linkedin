@@ -1,4 +1,5 @@
 import json
+import logging
 import time
 import os
 from datetime import datetime
@@ -9,6 +10,8 @@ import requests
 from selenium import webdriver
 
 from flask_server import run_server
+
+logger = logging.getLogger("linkedin")
 
 
 class LinkedinHelper:
@@ -115,10 +118,37 @@ class LinkedinHelper:
         )
 
         if response.status_code == 200:
-            print(response.json())
             return response.json()
 
         raise Exception(f"LinkedinHelper.code_for_access_token error: {response.status_code}\n{response.text}")
 
     def post(self, text):
-        pass
+        url = "https://api.linkedin.com/v2/ugcPosts"
+        post_data = {
+            "author": "urn:li:person:eg4hA0Glpp",
+            "lifecycleState": "PUBLISHED",
+            "specificContent": {
+                "com.linkedin.ugc.ShareContent": {
+                    "shareCommentary": {
+                        "text": text
+                    },
+                    "shareMediaCategory": "NONE"
+                }
+            },
+            "visibility": {
+                "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
+            }
+        }
+
+        headers = {
+            'Authorization': f'Bearer {self.access_token}',
+            'Content-Type': 'application/json',
+            'x-li-format': 'json'
+        }
+
+        response = requests.post(url, headers=headers, data=json.dumps(post_data))
+
+        if response.status_code == 201:
+            logger.debug("Post created successfully!")
+        else:
+            raise Exception(f"LinkedinHelper.post error: {response.status_code}\n{response.text}")
