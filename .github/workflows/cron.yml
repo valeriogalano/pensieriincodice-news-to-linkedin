@@ -1,0 +1,43 @@
+name: Cron
+
+on:
+  schedule:
+    - cron: '20 10-18 * * *'
+  workflow_dispatch:
+
+jobs:
+  execute:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: execute py script
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          PERSONAL_URN: ${{ secrets.PERSONAL_URN }}
+          LINKEDIN_MESSAGE_TEMPLATE: ${{ vars.LINKEDIN_MESSAGE_TEMPLATE }}
+          CALLBACK_URL_PORT: ${{ vars.CALLBACK_URL_PORT }}
+          CALLBACK_URL_PROTOCOL: ${{ vars.CALLBACK_URL_PROTOCOL }}
+          CALLBACK_URL: ${{ vars.CALLBACK_URL }}
+          SCOPE: ${{ vars.SCOPE }}
+        run: python main.py
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
