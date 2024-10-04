@@ -125,7 +125,7 @@ class LinkedinHelper:
     def post(self, text):
         url = "https://api.linkedin.com/v2/ugcPosts"
         post_data = {
-            "author": "urn:li:person:eg4hA0Glpp",
+            "author": f"urn:li:person:{self.personal_urn}",
             "lifecycleState": "PUBLISHED",
             "specificContent": {
                 "com.linkedin.ugc.ShareContent": {
