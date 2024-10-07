@@ -144,7 +144,7 @@ class LinkedinHelper:
                     "shareCommentary": {
                         "text": text
                     },
-                    "shareMediaCategory": "NONE"
+                    "shareMediaCategory": "ARTICLE"
                 }
             },
             "visibility": {
