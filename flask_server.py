@@ -13,6 +13,9 @@ def callback():
     code = request.args.get('code')
     today_date = datetime.now().strftime("%Y-%m-%d")
 
+    if code is None:
+        return 'Codice non trovato!'
+
     with open(f'{today_date}.json', 'a') as f:
         json_string = json.dumps({'code': code})
         f.write(json_string)
