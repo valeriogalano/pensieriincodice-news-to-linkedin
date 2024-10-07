@@ -34,6 +34,8 @@ class LinkedinHelper:
         self.access_token = getenv("ACCESS_TOKEN", None)
         self.personal_urn = getenv("PERSONAL_URN", None)
 
+        logger.debug("Linkedin inizializzato!")
+
     def auth(self):
         try:
             # cancello il file se è già stato fatto un tentativo di login
@@ -90,7 +92,7 @@ class LinkedinHelper:
         json_code['access_token'] = self.access_token
 
         with open(f'{self.today_date}.json', 'w') as f:
-            string_json = json.dumps(json_code, indent=4)
+            string_json = json.dumps(json_code)
             f.write(string_json)
 
     def start_local_server(self):

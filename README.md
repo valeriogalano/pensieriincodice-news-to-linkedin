@@ -23,7 +23,7 @@ Verrà aperta una finestra del browser dove chiederà all'utente di inserire use
 
 Una volta che l'utente ha effettuato il login, il browser si chiuderà automaticamente
 e verrà memorizzato in un file json denominato `{today_date}.json` 
-(ad es. `04-10-2024.json`) l'`access_token` e il `personal_urn` (id) dell'utente.
+(ad es. `2024-10-04.json`) l'`access_token` e il `personal_urn` (id) dell'utente.
 
 Queste informazioni dovranno essere aggiornate nei secrets di github per poter far funzionare l'automazione.
 
@@ -61,6 +61,21 @@ LINKEDIN_MESSAGE_TEMPLATE="{title}\n{notes}\n\n{source_url}"
 ```
 
 sono da inserire solo sul repo per consentire alla action di github di eseguire la pubblicazione.
+
+Infine se vuoi che lo script di autenticazione sincronizzi automaticamente via API il 
+tuo `access_token` ed il tuo `personal_urn` senza che tu debba farlo manualmente ti basta inserire la 
+variabile di ambiente `GH_CSV`.
+
+Nella variabile `GH_CSV` devi inserire sotto forma di CSV le seguenti informazioni:
+- proprietario del repository
+- nome del repository
+- token (puoi generare un token di GitHub seguendo questa procedura: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+
+Puoi inserire più repository inserendo il separatore `\n` dopo ogni repository, ad es.
+
+```
+GH_CSV="<owner>,<repo_name>,<token>\n<owner>,<repo_name>,<token>"
+```
 
 
 ### Installazione dei requirements
