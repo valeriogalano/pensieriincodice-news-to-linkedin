@@ -8,6 +8,7 @@ from multiprocessing import Process
 
 import requests
 from selenium import webdriver
+from selenium.common import NoSuchWindowException
 
 from flask_server import run_server
 
@@ -23,12 +24,17 @@ class LinkedinHelper:
         self.CLIENT_SECRET = getenv("CLIENT_SECRET", None)
         self.CALLBACK_PROTOCOL = getenv("CALLBACK_URL_PROTOCOL", 'http')
         self.CALLBACK_URL = getenv("CALLBACK_URL", f'localhost')
-        self.CALLBACK_PORT = int(getenv("CALLBACK_URL_PORT", "8000"))
+        self.CALLBACK_PORT = getenv("CALLBACK_URL_PORT", "8000")
         self.COMPLETE_CALLBACK_URL = f"{self.CALLBACK_PROTOCOL}://{self.CALLBACK_URL}:{self.CALLBACK_PORT}"
         self.SCOPE = getenv("SCOPE", 'w_member_social openid profile')
 
+        if isinstance(self.CALLBACK_PORT, str):
+            self.CALLBACK_PORT = int(self.CALLBACK_PORT)
+
         self.access_token = getenv("ACCESS_TOKEN", None)
         self.personal_urn = getenv("PERSONAL_URN", None)
+
+        logger.debug("Linkedin inizializzato!")
 
     def auth(self):
         try:
@@ -49,14 +55,14 @@ class LinkedinHelper:
             f"&scope={self.SCOPE}"
         )
 
-        driver = webdriver.Chrome()
+        driver = webdriver.Firefox()
         driver.get(url)
         mainwindow = driver.window_handles[0]  # noqa
 
         condition = True
         json_code = None
         while condition:
-            time.sleep(10)
+            time.sleep(5)
 
             try:
                 if os.path.exists(f'{self.today_date}.json'):
@@ -65,6 +71,12 @@ class LinkedinHelper:
                         json_code = json.loads(string_json_code)
                         if json_code['code'] is not None:
                             condition = False
+
+                driver.title  # noqa
+            except NoSuchWindowException as e:
+                # il browser è stato chiuso dall'utente
+                self.stop_local_server()
+                raise e
             except Exception:  # noqa
                 pass
 
@@ -80,7 +92,7 @@ class LinkedinHelper:
         json_code['access_token'] = self.access_token
 
         with open(f'{self.today_date}.json', 'w') as f:
-            string_json = json.dumps(json_code, indent=4)
+            string_json = json.dumps(json_code)
             f.write(string_json)
 
     def start_local_server(self):
