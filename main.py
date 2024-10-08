@@ -72,7 +72,7 @@ def main():
                   notes=escape_string(document['notes'])
               )
     try:
-        linkedin.post(message)
+        linkedin.post(message, document['source_url'])
         published_documents.append(document['id'])
     except Exception as e:
         logging.error(e)

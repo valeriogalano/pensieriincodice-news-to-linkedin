@@ -134,7 +134,7 @@ class LinkedinHelper:
 
         raise Exception(f"LinkedinHelper.code_for_access_token error: {response.status_code}\n{response.text}")
 
-    def post(self, text):
+    def post(self, text, post_url=None):
         url = "https://api.linkedin.com/v2/ugcPosts"
         post_data = {
             "author": f"urn:li:person:{self.personal_urn}",
@@ -144,13 +144,24 @@ class LinkedinHelper:
                     "shareCommentary": {
                         "text": text
                     },
-                    "shareMediaCategory": "ARTICLE"
                 }
             },
             "visibility": {
                 "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
             }
         }
+
+        post_type = "NONE"
+        if post_url is not None and post_url != "":
+            post_type = "ARTICLE"
+            post_data["specificContent"]["com.linkedin.ugc.ShareContent"]["media"] = [
+                {
+                    "status": "READY",
+                    "originalUrl": post_url,
+                }
+            ]
+
+        post_data['specificContent']['com.linkedin.ugc.ShareContent']['shareMediaCategory'] = post_type
 
         headers = {
             'Authorization': f'Bearer {self.access_token}',
