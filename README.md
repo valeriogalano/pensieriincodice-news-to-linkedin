@@ -57,7 +57,7 @@ Mentre le seguenti variabili:
 ```
 ACCESS_TOKEN=<ACCESS_TOKEN_HERE>
 PERSONAL_URN=<PERSONAL_URN_HERE>
-LINKEDIN_MESSAGE_TEMPLATE="{title}\n{notes}\n\n{source_url}"
+LINKEDIN_MESSAGE_TEMPLATE="{title}\n{notes}\n\n{link}"
 ```
 
 sono da inserire solo sul repo per consentire alla action di github di eseguire la pubblicazione.
