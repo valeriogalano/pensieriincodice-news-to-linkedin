@@ -36,11 +36,12 @@ Queste informazioni dovranno essere aggiornate nei secrets di github per poter f
 Nel file `.env.example` ci sono le variabili di ambiente che devi compilare per completare l'autenticazione,
 puoi impostarle nel tuo IDE o nel sistema operativo in esecuzione.
 
-Le variabili necessarie l'autenticazione sono 2:
+Le variabili necessarie l'autenticazione sono 3:
 
 ```
 CLIENT_ID="<LINKEDIN_CLIENT_ID_HERE>"
 CLIENT_SECRET="<LINKEDIN_CLIENT_SECRET_HERE>"
+READWISE_ACCESS_TOKEN="<READWISE_ACCESS_TOKEN_HERE>"
 ```
 
 Le seguenti variabili sono opzionali perchè hanno nel codice un valore di default: 
