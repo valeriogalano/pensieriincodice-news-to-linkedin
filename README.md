@@ -2,7 +2,9 @@
   <img src="https://raw.githubusercontent.com/valeriogalano/pensieriincodice-assets/main/images/pensieriincodice-logo-telegram-community.png" alt="Logo Progetto" width="150"/>
   <h1>Pensieri In Codice - News to LinkedIn</h1>
   <p>
-    Una repository Content Delivery Network (CDN) per ospitare e servire asset statici come immagini, audio e altri file per il podcast <a href="https://pensieriincodice.it/">pensieriincodice.it</a>.
+    Il progetto ha lo scopo di pubblicare le news di PIC sull'account Linkedin del podcast.
+  </p><p>    
+    Le news vengono prelevate da Readwise.
   </p>
   
   <p>
@@ -13,14 +15,6 @@
     <a href="https://www.paypal.com/donate/?hosted_button_id=HRKMD7X43R7SS" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/dona con-Paypal-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="Dona con Paypal"></a>
   </p>
 </div>
-
----
-
-## Scopo del Progetto
-
-Il progetto ha lo scopo di pubblicare le news di PIC sull'account Linkedin del podcast.
-
-Le news vengono prelevate da Readwise. 
 
 ---
 
