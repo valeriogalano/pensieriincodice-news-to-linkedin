@@ -81,7 +81,7 @@ class GithubHelper:
             },
             headers={
                 'Accept': 'application/vnd.github+json',
-                'Authorization': f'Bearer {gh['token']}',
+                'Authorization': f'Bearer {gh["token"]}',
                 'X-GitHub-Api-Version': '2022-11-28'
             }
         )
