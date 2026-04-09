@@ -16,17 +16,42 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: setup python
-        uses: actions/setup-python@v4
+      - name: Controlla scadenza token LinkedIn
+        env:
+          TOKEN_CREATED_AT: ${{ vars.TOKEN_CREATED_AT }}
+        run: |
+          if [ -z "$TOKEN_CREATED_AT" ]; then
+            echo "::warning::TOKEN_CREATED_AT non impostato. Impossibile verificare scadenza token."
+            exit 0
+          fi
+
+          expiry=$(date -d "$TOKEN_CREATED_AT + 60 days" +%s)
+          today=$(date +%s)
+          days_left=$(( (expiry - today) / 86400 ))
+
+          echo "Token creato il: $TOKEN_CREATED_AT"
+          echo "Giorni rimanenti alla scadenza: $days_left"
+
+          if [ "$days_left" -le 5 ]; then
+            echo "::error::Il token LinkedIn scade tra $days_left giorni! Rinnova il token eseguendo auth.py e aggiorna i secrets."
+            exit 1
+          fi
+
+          if [ "$days_left" -le 10 ]; then
+            echo "::warning::Il token LinkedIn scade tra $days_left giorni. Pianifica il rinnovo presto."
+          fi
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: install python packages
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: execute py script
+      - name: Execute
         env:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}

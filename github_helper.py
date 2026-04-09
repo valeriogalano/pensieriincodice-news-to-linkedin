@@ -91,6 +91,40 @@ class GithubHelper:
         else:
             raise Exception(f"GithubHelper.update_secret error: {response.status_code}\n{response.text}")
 
+    def update_variable(self, gh, variable_name, variable_value):  # noqa
+        logger.debug(f"Aggiornamento variabile {variable_name}...")
+        url = f"https://api.github.com/repos/{gh['owner']}/{gh['name']}/actions/variables/{variable_name}"
+
+        response = requests.patch(
+            url,
+            json={"name": variable_name, "value": variable_value},
+            headers={
+                'Accept': 'application/vnd.github+json',
+                'Authorization': f'Bearer {gh["token"]}',
+                'X-GitHub-Api-Version': '2022-11-28'
+            }
+        )
+
+        if response.status_code == 204:
+            logger.debug(f"Variabile {variable_name} aggiornata con successo!")
+        elif response.status_code == 404:
+            # La variabile non esiste ancora, la creo
+            response = requests.post(
+                url.rsplit('/', 1)[0],
+                json={"name": variable_name, "value": variable_value},
+                headers={
+                    'Accept': 'application/vnd.github+json',
+                    'Authorization': f'Bearer {gh["token"]}',
+                    'X-GitHub-Api-Version': '2022-11-28'
+                }
+            )
+            if response.status_code == 201:
+                logger.debug(f"Variabile {variable_name} creata con successo!")
+            else:
+                raise Exception(f"GithubHelper.update_variable error: {response.status_code}\n{response.text}")
+        else:
+            raise Exception(f"GithubHelper.update_variable error: {response.status_code}\n{response.text}")
+
     def post_credentials(self):
         with open(f'{self.today_date}.json', 'r') as f:
             string_json_code = f.readline()
@@ -105,3 +139,5 @@ class GithubHelper:
 
             encoded_pu = self.encrypt(gh['key'], self.personal_urn)
             self.update_secret(gh, 'PERSONAL_URN', encoded_pu)
+
+            self.update_variable(gh, 'TOKEN_CREATED_AT', self.today_date)
