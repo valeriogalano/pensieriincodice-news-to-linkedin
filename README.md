@@ -22,9 +22,20 @@ Lo script interroga l'API di Readwise per recuperare le ultime news salvate, le 
 
 ### Flusso di autenticazione
 
-1. Avvia lo script `auth.py` — verrà aperto un browser per il login LinkedIn.
-2. Dopo il login, il browser si chiude automaticamente e viene salvato un file `{data_odierna}.json` con `access_token` e `personal_urn`.
-3. Aggiorna i secrets di GitHub con i valori ottenuti.
+1. Avvia lo script `auth.py` — viene stampato l'URL di autorizzazione LinkedIn.
+2. Apri l'URL nel browser, effettua il login e autorizza l'applicazione.
+3. Dopo il redirect, copia l'URL completo dalla barra del browser e incollalo nel terminale.
+4. Viene salvato un file `{data_odierna}.json` con `access_token` e `personal_urn`.
+5. Lo script aggiorna automaticamente i secrets e la variabile `TOKEN_CREATED_AT` su GitHub (se `GH_CSV` è configurato).
+
+### Monitoraggio scadenza token
+
+Il workflow controlla ad ogni esecuzione la variabile `TOKEN_CREATED_AT` per verificare la scadenza del token (60 giorni):
+
+- **≤10 giorni alla scadenza** → warning nel log della build
+- **≤5 giorni alla scadenza** → errore, la build fallisce con messaggio chiaro
+
+Quando si rinnova il token tramite `auth.py`, `TOKEN_CREATED_AT` viene aggiornato automaticamente su tutti i repository configurati in `GH_CSV`.
 
 ---
 
@@ -65,10 +76,10 @@ LINKEDIN_MESSAGE_TEMPLATE="{title}\n{notes}\n\n{link}"
 
 ### Sincronizzazione automatica dei secrets (opzionale)
 
-Imposta `GH_CSV` per sincronizzare automaticamente `access_token` e `personal_urn` via API GitHub senza intervento manuale. Il formato è CSV con separatore `\n` tra repository:
+Imposta `GH_CSV` per sincronizzare automaticamente `ACCESS_TOKEN`, `PERSONAL_URN` e la variabile `TOKEN_CREATED_AT` via API GitHub su tutti i repository configurati. Il formato è CSV con separatore `\n` tra repository:
 
 ```
-GH_CSV="<owner>,<repo_name>,<token>\n<owner>,<repo_name>,<token>"
+GH_CSV="<owner>,<repo_name>,<github_token>\n<owner>,<repo_name>,<github_token>"
 ```
 
 ### Template del messaggio
@@ -92,7 +103,7 @@ pip install -r requirements.txt
 python auth.py
 ```
 
-Inserisci le credenziali LinkedIn nel browser che apparirà e attendi la chiusura automatica.
+Lo script stampa l'URL di autorizzazione LinkedIn. Aprilo nel browser, effettua il login, poi copia l'URL di redirect dalla barra del browser e incollalo nel terminale quando richiesto.
 
 ---
 
