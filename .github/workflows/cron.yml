@@ -9,9 +9,6 @@ jobs:
   execute:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: write
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -63,7 +60,7 @@ jobs:
           CALLBACK_URL: ${{ vars.CALLBACK_URL }}
           SCOPE: ${{ vars.SCOPE }}
           READWISE_ACCESS_TOKEN: ${{ secrets.READWISE_ACCESS_TOKEN }}
+          PUBLISHED_IDS: ${{ vars.PUBLISHED_IDS }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: python main.py
-
-      - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v5
